@@ -1,3 +1,4 @@
+MAX_LINE_CHARACTERS = 44
 # Dictionary to map digits to numeric values for check digit calculation
 digit_map = {
     '<': 0,
@@ -64,6 +65,9 @@ def checkField(field, provided_digit):
     else:
         return 'Failed'
      
+def query_db(personal_number):
+    '''Queries the database and returns the result'''
+    pass
 
 # Requirement 1
 def scanMRZ(doc):
@@ -122,9 +126,23 @@ def decodeMRZ(line1, line2):
     return traveler_info
 
 # Requirement 3
-def encodeTravelInfo(dbEntry):
+def encodeTravelInfo(personal_number):
     '''Encodes the travel information from a database entry into the two lines of the MRZ'''
-    pass
+    # Query the database for the traveler's information
+    traveler_info = query_db(personal_number)
+
+    # Encode the first line
+    line1 = traveler_info['document_type'] + '<' + traveler_info['issuing_country'] + traveler_info['last_name'] + '<<' + traveler_info['first_name'] + '<<' + traveler_info['middle_name']
+    x = len(line1)
+    line1 += '<' * (MAX_LINE_CHARACTERS - x)
+
+    # Encode the second line
+    line2 = traveler_info['passport_number'] + traveler_info['passport_number_check_digit'] + traveler_info['country_code'] + traveler_info['birth_date'] + traveler_info['birth_date_check_digit'] + traveler_info['sex'] + traveler_info['expiration_date'] + traveler_info['expiration_date_check_digit'] + traveler_info['personal_number']
+    x = len(line2)
+    line2 += '<' * (MAX_LINE_CHARACTERS - x - 1)
+    line2 += traveler_info['personal_number_check_digit']
+
+    return [line1, line2]
 
 # Requirement 4
 def checkMRZ(traveler_info):
