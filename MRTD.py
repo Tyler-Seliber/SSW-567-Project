@@ -83,6 +83,10 @@ def decodeMRZ(line1, line2):
     list1.insert(1, country_code)
     list1.insert(2, last_name)
 
+    # Re-insert empty string if person does not have a middle name
+    if len(list1) == 4:
+        list1.append('')
+
     # Decode line2
     # Split the line into a list of strings
     list2 = []
