@@ -4,10 +4,33 @@ from unittest.mock import MagicMock, patch
 
 class TestMRTD(unittest.TestCase):
 
-    def test_scanMRZ(self):
+    @patch('MRTD.scanMRZ')
+    def test_scanMRZ(self, mockedDocument):
         # Test the scanMRZ function
+        # NOTE: 'doc' is set to None as a placeholder for the document object
         # Test 1
-        pass
+        mockedDocument.return_value = ['P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<', 'L898902C36UT07408122F1204159ZE184226B<<<<<<1']
+        doc = None
+        output = MRTD.scanMRZ(doc)
+        self.assertEqual(['P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<', 'L898902C36UT07408122F1204159ZE184226B<<<<<<1'], output)
+
+        # Test 2
+        mockedDocument.return_value = ['P<ITAPEPPERONI<<JOHNNY<DONNY<<<<<<<<<<<<<<<<<<<', '067FIKKXO7ITA8401186M9211041T8W3UK289<<<<<<<<<7']
+        doc = None
+        output = MRTD.scanMRZ(doc)
+        self.assertEqual(['P<ITAPEPPERONI<<JOHNNY<DONNY<<<<<<<<<<<<<<<<<<<', '067FIKKXO7ITA8401186M9211041T8W3UK289<<<<<<<<<7'], output)
+
+        # Test 3
+        mockedDocument.return_value = ['P<FRABAGUETTE<<OUI<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', '4J5S0UCIU4FRA1506303F370808664U4CO5DC<<<<<<<<<8']
+        doc = None
+        output = MRTD.scanMRZ(doc)
+        self.assertEqual(['P<FRABAGUETTE<<OUI<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', '4J5S0UCIU4FRA1506303F370808664U4CO5DC<<<<<<<<<8'], output)
+
+        # Test 4
+        mockedDocument.return_value = ['P<ALBFRANKLIN<<ARNOLD<SWOLE<<<<<<<<<<<<<<<<<<<<', 'MN6JC8BV39ALB4912251M09103184UR757JNNONF8FLF3C1']
+        doc = None
+        output = MRTD.scanMRZ(doc)
+        self.assertEqual(['P<ALBFRANKLIN<<ARNOLD<SWOLE<<<<<<<<<<<<<<<<<<<<', 'MN6JC8BV39ALB4912251M09103184UR757JNNONF8FLF3C1'], output)
 
     def test_decodeMRZ(self):
         # Test the decodeMRZ function
@@ -67,14 +90,15 @@ class TestMRTD(unittest.TestCase):
         actual = MRTD.decodeMRZ(line1, line2)
         self.assertEqual(expected, actual)
 
-        # Test 9 - Personal number longer than 9 characters (remainder of 3)
+        # Test 9 - Personal number max 18 characters
         line1 = 'P<ALBFRANKLIN<<ARNOLD<SWOLE<<<<<<<<<<<<<<<<<<<<'
         line2 = 'MN6JC8BV39ALB4912251M09103184UR757JNNONF8FLF3C1'
         expected = {'document_type': 'P', 'issuing_country': 'ALB', 'last_name': 'FRANKLIN', 'first_name': 'ARNOLD', 'middle_name': 'SWOLE', 'passport_number': 'MN6JC8BV3', 'passport_number_check_digit': '9', 'country_code': 'ALB', 'birth_date': '491225', 'birth_date_check_digit': '1', 'sex': 'M', 'expiration_date': '091031', 'expiration_date_check_digit': '8', 'personal_number': '4UR757JNNONF8FLF3C', 'personal_number_check_digit': '1'}
         actual = MRTD.decodeMRZ(line1, line2)
         self.assertEqual(expected, actual)
     
-    def test_encode_travel_info(self):
+    @patch('MRTD.encodeTravelInfo')
+    def test_encode_travel_info(self, mockedDBentry):
         # Test the encode_travel_info function
         # Test 1
         pass
