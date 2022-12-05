@@ -132,7 +132,7 @@ def encodeTravelInfo(personal_number):
     traveler_info = query_db(personal_number)
 
     # Encode the first line
-    line1 = traveler_info['document_type'] + '<' + traveler_info['issuing_country'] + traveler_info['last_name'] + '<<' + traveler_info['first_name'] + '<<' + traveler_info['middle_name']
+    line1 = traveler_info['document_type'] + '<' + traveler_info['issuing_country'] + traveler_info['last_name'] + '<<' + traveler_info['first_name'] + '<' + traveler_info['middle_name']
     x = len(line1)
     line1 += '<' * (MAX_LINE_CHARACTERS - x)
 
