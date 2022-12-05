@@ -154,15 +154,3 @@ def checkMRZ(traveler_info):
         'Personal Number': checkField(traveler_info['personal_number'], int(traveler_info['personal_number_check_digit']))
     }
     return failed_checks
-
-def main():
-    line1 = 'P<UTOERIKSSON<<ANNA<MARIA<<<<<<<<<<<<<<<<<<<'
-    line2 = 'L898902C36UT07408122F1204159ZE184226B<<<<<<1'
-
-    info = decodeMRZ(line1, line2)
-    print('Traveler info: ' + str(info))
-    print('Check results: ' + str(checkMRZ(info)))
-
-
-if __name__ == '__main__':
-    main()
